@@ -1,0 +1,3 @@
+[submodule "skills/desktop-app-design"]
+	path = skills/desktop-app-design
+	url = https://github.com/laststance/skills-desktop.git
