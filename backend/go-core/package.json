@@ -1,0 +1,13 @@
+{
+  "name": "@zentrail/go-core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Zentrail IDE Go core service (gRPC + WebSocket + SQLite)",
+  "scripts": {
+    "dev": "go run .",
+    "build": "go build -o bin/zentrail-core .",
+    "typecheck": "go vet ./...",
+    "lint": "go vet ./...",
+    "test": "go test ./..."
+  }
+}
