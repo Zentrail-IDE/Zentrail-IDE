@@ -1,0 +1,8 @@
+{
+  "themeMode": "dark",
+  "accent": "#2f81f7",
+  "defaultSkillTab": "files",
+  "preferredTerminal": "system",
+  "windowBlur": true,
+  "dataDir": ".data"
+}
