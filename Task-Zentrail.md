@@ -29,7 +29,6 @@ The roadmap is divided into multiple phases, each containing detailed tasks, mil
 * Python Runtime setup
 * Configuration system
 * Build system
-* Logging system
 
 ---
 
