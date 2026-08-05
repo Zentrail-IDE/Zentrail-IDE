@@ -1,6 +1,6 @@
 # Zentrail IDE
 
-> **AI-native desktop development environment** — Phase 1: Foundation.
+> **AI-native desktop development environment** — Phase 2: Core IDE
 
 Zentrail IDE combines a modern code editor, integrated AI agents, intelligent
 automation, Git operations, and real-time collaboration into a single workspace.
