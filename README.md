@@ -85,18 +85,6 @@ pnpm typecheck        # Type-check every package
 pnpm test             # Run every package's tests
 ```
 
----
-
-## Project status
-
-Phase 1 establishes the repository structure, development environment, Tauri
-desktop shell, Go core initialization, TypeScript UI setup, Python runtime
-setup, the configuration system, and the build system. Later phases (see
-`Task-Zentrail.md`) layer on the editor, terminal, Git, workspace system,
-multi-agent collaboration, and more.
-
----
-
 ## License
 
 MIT
