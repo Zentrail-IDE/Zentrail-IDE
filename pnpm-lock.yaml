@@ -35,9 +35,15 @@ importers:
       '@tauri-apps/plugin-shell':
         specifier: ^2.0.2
         version: 2.3.5
+      '@zentrail/git':
+        specifier: workspace:*
+        version: link:../../packages/git
       '@zentrail/settings':
         specifier: workspace:*
         version: link:../../packages/settings
+      '@zentrail/terminal':
+        specifier: workspace:*
+        version: link:../../packages/terminal
       '@zentrail/ui':
         specifier: workspace:*
         version: link:../../packages/ui

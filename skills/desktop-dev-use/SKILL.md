@@ -52,6 +52,19 @@ pnpm monorepo composed of:
 8. [x] Configuration system (`configs/` + `packages/settings`)
 9. [x] Build system (workspace scripts + Tauri/Go/Python build targets)
 
+## Phase 3 — Terminal & Git checklist (source of truth: `Task-Zentrail.md`)
+
+1. [x] Integrated Terminal dock (`apps/desktop/src/components/Terminal.tsx`)
+2. [x] Terminal profiles: System / PowerShell / CMD / Git Bash (`packages/terminal`)
+3. [x] Multi-session tabs with spawn / write / kill over IPC (`state/terminalStore.ts`)
+4. [x] Rust terminal backend spawning real shells via `tauri-plugin-shell`
+     (`src-tauri/src/commands/terminal.rs`, events `zentrail://terminal-output`)
+5. [x] Git sidebar panel: status, staging, commit (`apps/desktop/src/components/GitPanel.tsx`)
+6. [x] Git history / log view (`packages/git` + `GitPanel` history list)
+7. [x] Branch management: list / checkout / merge (`state/gitStore.ts`)
+8. [x] Pull & Push & Sync with ahead/behind indicators (`ipc.ts` + `commands/git.rs`)
+9. [x] IPC contract with browser demo fallback (`apps/desktop/src/lib/ipc.ts`)
+
 ## Conventions
 
 - TypeScript strict mode everywhere; `tsconfig.base.json` owns the shared

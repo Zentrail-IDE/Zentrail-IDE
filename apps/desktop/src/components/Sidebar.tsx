@@ -1,6 +1,7 @@
 import { useUi } from "../state/uiStore";
 import { FileExplorer } from "./FileExplorer";
 import { SettingsPanel } from "./SettingsPanel";
+import { GitPanel } from "./GitPanel";
 
 function SearchPanel() {
   return (
@@ -25,6 +26,7 @@ export function Sidebar() {
     <aside className="sidebar">
       {activity === "explorer" && <FileExplorer />}
       {activity === "search" && <SearchPanel />}
+      {activity === "git" && <GitPanel />}
       {activity === "settings" && <SettingsPanel />}
     </aside>
   );
