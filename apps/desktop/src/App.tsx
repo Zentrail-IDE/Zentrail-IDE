@@ -1,70 +1,65 @@
-import { invoke } from "@tauri-apps/api/core";
-import { useEffect, useState } from "react";
-import { Boxes, Cpu, Settings2 } from "lucide-react";
-
-interface AppVersion {
-  version: string;
-  goCore: string;
-  pythonRt: string;
-}
+import { useEffect } from "react";
+import { MenuBar } from "./components/MenuBar";
+import { ActivityBar } from "./components/ActivityBar";
+import { Sidebar } from "./components/Sidebar";
+import { EditorTabs } from "./components/editor/EditorTabs";
+import { EditorPane } from "./components/editor/EditorPane";
+import { StatusBar } from "./components/StatusBar";
+import { CommandPalette } from "./components/CommandPalette";
+import { Notifications } from "./components/Notifications";
+import { useUi } from "./state/uiStore";
+import { useEditor } from "./state/editorStore";
+import { onNotification } from "./lib/events";
 
 /**
- * Phase 1 shell: a minimal, dark-first window that proves the Tauri <-> frontend
- * IPC bridge and the design-system tokens are wired up. Later phases replace the
- * placeholder body with the editor, terminal, and agent surfaces.
+ * Phase 2 — Core IDE shell.
+ *
+ * Composes the menu bar, activity bar, sidebar (explorer / search / settings),
+ * the Monaco editor with tabs, the status bar, the command palette, and the
+ * notification toasts. All backend communication flows through `lib/ipc`.
  */
 export function App() {
-  const [version, setVersion] = useState<AppVersion | null>(null);
-  const [ping, setPing] = useState<string>("");
+  const commandOpen = useUi((s) => s.commandOpen);
+  const setCommandOpen = useUi((s) => s.setCommandOpen);
+  const pushToast = useUi((s) => s.pushToast);
 
   useEffect(() => {
-    invoke<AppVersion>("get_app_version")
-      .then(setVersion)
-      .catch(() => setVersion({ version: "0.0.0", goCore: "—", pythonRt: "—" }));
-  }, []);
+    return onNotification((p) =>
+      pushToast({ title: p.title, body: p.body, kind: "info" }),
+    );
+  }, [pushToast]);
 
-  async function runPing() {
-    const reply = await invoke<string>("ping", { message: "Zentrail" });
-    setPing(reply);
-  }
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const mod = e.ctrlKey || e.metaKey;
+      if (mod && e.key.toLowerCase() === "p") {
+        e.preventDefault();
+        setCommandOpen(true);
+      } else if (mod && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        void useEditor.getState().save();
+      } else if (e.key === "Escape") {
+        setCommandOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [setCommandOpen]);
 
   return (
     <div className="app">
-      <header className="app__header">
-        <div className="app__brand">
-          <Boxes size={18} className="accent" />
-          <span>Zentrail IDE</span>
-        </div>
-        <nav className="app__nav">
-          <button className="btn" type="button">
-            <Cpu size={14} /> Agents
-          </button>
-          <button className="btn" type="button">
-            <Settings2 size={14} /> Settings
-          </button>
-        </nav>
-      </header>
-
-      <main className="app__body">
-        <section className="card">
-          <h1>Phase 1 — Foundation</h1>
-          <p className="muted">
-            Desktop shell booted. Tauri v2 · React · TypeScript · Vite.
-          </p>
-          <dl className="kv">
-            <dt>App</dt>
-            <dd>{version?.version ?? "loading…"}</dd>
-            <dt>Go Core</dt>
-            <dd>{version?.goCore ?? "—"}</dd>
-            <dt>Python RT</dt>
-            <dd>{version?.pythonRt ?? "—"}</dd>
-          </dl>
-          <button className="btn btn--primary" type="button" onClick={runPing}>
-            Ping core
-          </button>
-          {ping && <p className="ping">↳ {ping}</p>}
-        </section>
-      </main>
+      <MenuBar />
+      <div className="app__middle">
+        <ActivityBar />
+        <Sidebar />
+        <main className="editor">
+          <EditorTabs />
+          <EditorPane />
+        </main>
+      </div>
+      <StatusBar />
+      {commandOpen && <CommandPalette />}
+      <Notifications />
     </div>
   );
 }

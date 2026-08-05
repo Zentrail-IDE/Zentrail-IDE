@@ -1,0 +1,30 @@
+{
+  "name": "zentrail-ide",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Zentrail IDE — AI-native desktop development environment (Phase 1: Foundation)",
+  "license": "MIT",
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20.11.0",
+    "pnpm": ">=9"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @zentrail/desktop dev",
+    "build": "pnpm -r build",
+    "build:desktop": "pnpm --filter @zentrail/desktop build",
+    "tauri": "pnpm --filter @zentrail/desktop tauri",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "go:build": "pnpm --filter @zentrail/go-core build",
+    "go:run": "pnpm --filter @zentrail/go-core dev",
+    "py:install": "pnpm --filter @zentrail/python install",
+    "py:run": "pnpm --filter @zentrail/python dev",
+    "clean": "pnpm -r exec rm -rf dist node_modules .turbo 2>/dev/null || true"
+  },
+  "devDependencies": {
+    "@types/node": "^20.16.0",
+    "typescript": "^5.6.3"
+  }
+}

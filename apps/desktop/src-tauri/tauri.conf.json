@@ -37,5 +37,10 @@
       "icons/icon.ico"
     ]
   },
-  "plugins": {}
+  "plugins": {
+    "notification": {
+      "title": "Zentrail IDE",
+      "body": "Notification from Zentrail IDE"
+    }
+  }
 }

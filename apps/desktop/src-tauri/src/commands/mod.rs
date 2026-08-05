@@ -1,3 +1,5 @@
+pub mod files;
+
 use serde::Serialize;
 
 /// Typed payload returned by `get_app_version`.

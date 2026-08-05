@@ -1,0 +1,27 @@
+[project]
+name = "zentrail-runtime"
+version = "0.1.0"
+description = "Zentrail IDE Python AI runtime (MCP + LangGraph)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+
+dependencies = [
+    "fastmcp>=2.0.0",
+    "langgraph>=0.2.0",
+    "pydantic>=2.0.0",
+]
+
+[project.scripts]
+zentrail-runtime = "zentrail_runtime.main:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

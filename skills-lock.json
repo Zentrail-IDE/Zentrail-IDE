@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "tauri-desktop": {
+      "source": "travisjneuman/.claude",
+      "sourceType": "github",
+      "skillPath": "skills/tauri-desktop/SKILL.md",
+      "computedHash": "d0775b08784fbb223305958e3db54d2ef57a687769f9574a1988c0272d5810a6"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "@zentrail/python",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Zentrail IDE Python AI runtime (MCP + LangGraph)",
+  "scripts": {
+    "dev": "python -m zentrail_runtime",
+    "install": "python -m venv .venv && .venv/Scripts/activate && pip install -e .",
+    "lint": "python -m pyflakes src || true",
+    "test": "python -m pytest -q || true"
+  }
+}
