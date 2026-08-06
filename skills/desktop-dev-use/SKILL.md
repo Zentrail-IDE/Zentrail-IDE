@@ -65,6 +65,22 @@ pnpm monorepo composed of:
 8. [x] Pull & Push & Sync with ahead/behind indicators (`ipc.ts` + `commands/git.rs`)
 9. [x] IPC contract with browser demo fallback (`apps/desktop/src/lib/ipc.ts`)
 
+## Phase 4 — Workspace System checklist (source of truth: `Task-Zentrail.md`)
+
+1. [x] Workspace domain models + helpers + unit tests (`packages/workspace/src/index.ts`, `src/index.test.ts`)
+2. [x] Workspace Manager store: workspaces, sessions, memory, settings, recents (`apps/desktop/src/state/workspaceStore.ts`)
+3. [x] Multi-project support: per-workspace project folders (`packages/workspace` `WorkspaceProject`)
+4. [x] Workspace Sessions: save / restore editor sessions (`workspaceStore.saveSession` / `switchSession`)
+5. [x] Workspace Memory: key/value notes per workspace (`packages/workspace` `WorkspaceMemory`)
+6. [x] Workspace Settings: workspace-scoped overrides (`packages/workspace` `WorkspaceSettings`)
+7. [x] Recent Workspaces: MRU list with open / remove (`workspaceStore.openRecent` / `removeRecent`)
+8. [x] Workspace Templates: scaffold presets (`packages/workspace` `defaultTemplates`)
+9. [x] Workspace panel UI in the activity sidebar (`apps/desktop/src/components/WorkspacePanel.tsx`)
+10. [x] Activity bar + sidebar wiring for the Workspace view (`ActivityBar.tsx`, `Sidebar.tsx`)
+11. [x] Command palette: open workspace / recents / templates (`CommandPalette.tsx`)
+12. [x] Rust persistence backend (registry in app config dir) (`src-tauri/src/commands/workspace.rs`)
+13. [x] IPC contract + browser demo fallback for all workspace commands (`apps/desktop/src/lib/ipc.ts`)
+
 ## Conventions
 
 - TypeScript strict mode everywhere; `tsconfig.base.json` owns the shared
