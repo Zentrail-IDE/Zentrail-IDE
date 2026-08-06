@@ -7,6 +7,14 @@ import type {
   GitBranch,
   GitRemote,
 } from "@zentrail/git";
+import type {
+  Workspace,
+  RecentWorkspace,
+  WorkspaceSession,
+  WorkspaceMemory,
+  WorkspaceSettings,
+  WorkspaceTemplate,
+} from "@zentrail/workspace";
 
 /** True when running inside the Tauri webview (as opposed to a plain browser). */
 export function isTauri(): boolean {
@@ -70,6 +78,41 @@ export const ipc = {
   gitMerge: (root: string, branch: string) =>
     invoke<{ stdout: string }>("git_merge", { root, branch }),
   gitInit: (root: string) => invoke<void>("git_init", { root }),
+
+  // ---- Phase 4: Workspace System -----------------------------------------
+  listWorkspaces: () => invoke<Workspace[]>("list_workspaces"),
+  saveWorkspace: (workspace: Workspace) =>
+    invoke<Workspace>("save_workspace", { workspace }),
+  deleteWorkspace: (id: string) =>
+    invoke<void>("delete_workspace", { id }),
+  recentWorkspaces: () => invoke<RecentWorkspace[]>("recent_workspaces"),
+  recordRecent: (path: string, name?: string) =>
+    invoke<RecentWorkspace>("record_recent", { path, name }),
+  removeRecent: (path: string) => invoke<void>("remove_recent", { path }),
+  workspaceSessions: (workspaceId: string) =>
+    invoke<WorkspaceSession[]>("workspace_sessions", { workspaceId }),
+  saveSession: (session: WorkspaceSession) =>
+    invoke<WorkspaceSession>("save_session", { session }),
+  deleteSession: (id: string) => invoke<void>("delete_session", { id }),
+  workspaceMemory: (workspaceId: string) =>
+    invoke<WorkspaceMemory>("workspace_memory", { workspaceId }),
+  saveMemory: (memory: WorkspaceMemory) =>
+    invoke<WorkspaceMemory>("save_memory", { memory }),
+  workspaceSettings: (workspaceId: string) =>
+    invoke<WorkspaceSettings>("workspace_settings", { workspaceId }),
+  saveWorkspaceSettings: (workspaceId: string, patch: Record<string, unknown>) =>
+    invoke<WorkspaceSettings>("save_workspace_settings", {
+      workspaceId,
+      patch,
+    }),
+  workspaceTemplates: () => invoke<WorkspaceTemplate[]>("workspace_templates"),
+  addProject: (workspaceId: string, path: string) =>
+    invoke<Workspace>("add_project", { workspaceId, path }),
+  createFromTemplate: (
+    templateId: string,
+    rootPath: string,
+    name?: string,
+  ) => invoke<Workspace>("create_from_template", { templateId, rootPath, name }),
 };
 
 // ---------------------------------------------------------------------------
@@ -145,6 +188,53 @@ const DEMO_GIT_BRANCHES = {
   ] as GitRemote[],
 };
 
+// In-memory demo registry for the Phase 4 Workspace System. Mirrors the
+// on-disk registry maintained by the Rust backend when running in the shell.
+const DEMO_WORKSPACES: Workspace[] = [];
+const DEMO_RECENTS: RecentWorkspace[] = [];
+const DEMO_SESSIONS: WorkspaceSession[] = [];
+const DEMO_MEMORY: Record<string, WorkspaceMemory> = {};
+const DEMO_SETTINGS: Record<string, WorkspaceSettings> = {};
+const DEMO_TEMPLATES: WorkspaceTemplate[] = [
+  {
+    id: "blank",
+    name: "Blank Workspace",
+    description: "An empty workspace with a README to get you started.",
+    projects: ["src"],
+    files: [{ path: "README.md", contents: "# Workspace\n\nCreated from the Blank Workspace template.\n" }],
+  },
+  {
+    id: "node-ts",
+    name: "Node + TypeScript",
+    description: "A minimal Node.js + TypeScript project scaffold.",
+    projects: ["src"],
+    files: [
+      { path: "package.json", contents: '{ "name": "workspace", "version": "0.1.0", "type": "module" }\n' },
+      { path: "src/index.ts", contents: 'console.log("Hello from Zentrail IDE");\n' },
+    ],
+  },
+  {
+    id: "python",
+    name: "Python",
+    description: "A Python project with a venv-ready layout.",
+    projects: ["src"],
+    files: [
+      { path: "pyproject.toml", contents: '[project]\nname = "workspace"\nversion = "0.1.0"\n' },
+      { path: "src/main.py", contents: 'def main() -> None:\n    print("Hello from Zentrail IDE")\n' },
+    ],
+  },
+  {
+    id: "rust-cli",
+    name: "Rust CLI",
+    description: "A cargo-ready Rust command-line project.",
+    projects: ["src"],
+    files: [
+      { path: "Cargo.toml", contents: '[package]\nname = "workspace"\nversion = "0.1.0"\nedition = "2021"\n' },
+      { path: "src/main.rs", contents: 'fn main() {\n    println!("Hello from Zentrail IDE");\n}\n' },
+    ],
+  },
+];
+
 function demo<T>(cmd: string, args?: Record<string, unknown>): T {
   switch (cmd) {
     case "ping":
@@ -196,6 +286,162 @@ function demo<T>(cmd: string, args?: Record<string, unknown>): T {
     case "git_push":
     case "git_merge":
       return { stdout: `demo: ${cmd} completed` } as T;
+    case "list_workspaces":
+      return [...DEMO_WORKSPACES] as T;
+    case "save_workspace": {
+      const ws = args?.workspace as Workspace;
+      const stored: Workspace = {
+        ...ws,
+        id: ws.id || crypto.randomUUID(),
+        createdAt: ws.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      const idx = DEMO_WORKSPACES.findIndex((w) => w.id === stored.id);
+      if (idx >= 0) DEMO_WORKSPACES[idx] = stored;
+      else DEMO_WORKSPACES.push(stored);
+      return stored as T;
+    }
+    case "delete_workspace": {
+      const id = String(args?.id);
+      const removed = DEMO_WORKSPACES.find((w) => w.id === id);
+      for (let i = DEMO_WORKSPACES.length - 1; i >= 0; i--) {
+        if (DEMO_WORKSPACES[i].id === id) DEMO_WORKSPACES.splice(i, 1);
+      }
+      if (removed) {
+        for (let i = DEMO_RECENTS.length - 1; i >= 0; i--) {
+          if (DEMO_RECENTS[i].path === removed.rootPath) DEMO_RECENTS.splice(i, 1);
+        }
+      }
+      for (let i = DEMO_SESSIONS.length - 1; i >= 0; i--) {
+        if (DEMO_SESSIONS[i].workspaceId === id) DEMO_SESSIONS.splice(i, 1);
+      }
+      delete DEMO_MEMORY[id];
+      delete DEMO_SETTINGS[id];
+      return undefined as T;
+    }
+    case "recent_workspaces":
+      return [...DEMO_RECENTS] as T;
+    case "record_recent": {
+      const path = String(args?.path);
+      const name = (args?.name as string | undefined) ?? path.split(/[\\/]/).pop() ?? path;
+      const entry: RecentWorkspace = {
+        id: `path-${path.length}`,
+        path,
+        name,
+        lastOpenedAt: new Date().toISOString(),
+      };
+      for (let i = DEMO_RECENTS.length - 1; i >= 0; i--) {
+        if (DEMO_RECENTS[i].path === path) DEMO_RECENTS.splice(i, 1);
+      }
+      DEMO_RECENTS.unshift(entry);
+      DEMO_RECENTS.splice(20);
+      return entry as T;
+    }
+    case "remove_recent": {
+      const path = String(args?.path);
+      for (let i = DEMO_RECENTS.length - 1; i >= 0; i--) {
+        if (DEMO_RECENTS[i].path === path) DEMO_RECENTS.splice(i, 1);
+      }
+      return undefined as T;
+    }
+    case "workspace_sessions": {
+      const id = String(args?.workspaceId);
+      return DEMO_SESSIONS.filter((s) => s.workspaceId === id) as T;
+    }
+    case "save_session": {
+      const session = args?.session as WorkspaceSession;
+      const stored: WorkspaceSession = {
+        ...session,
+        id: session.id || crypto.randomUUID(),
+        savedAt: new Date().toISOString(),
+      };
+      const idx = DEMO_SESSIONS.findIndex((s) => s.id === stored.id);
+      if (idx >= 0) DEMO_SESSIONS[idx] = stored;
+      else DEMO_SESSIONS.push(stored);
+      return stored as T;
+    }
+    case "delete_session": {
+      const id = String(args?.id);
+      for (let i = DEMO_SESSIONS.length - 1; i >= 0; i--) {
+        if (DEMO_SESSIONS[i].id === id) DEMO_SESSIONS.splice(i, 1);
+      }
+      return undefined as T;
+    }
+    case "workspace_memory": {
+      const id = String(args?.workspaceId);
+      return (DEMO_MEMORY[id] ?? { workspaceId: id, entries: [] }) as T;
+    }
+    case "save_memory": {
+      const memory = args?.memory as WorkspaceMemory;
+      DEMO_MEMORY[memory.workspaceId] = memory;
+      return memory as T;
+    }
+    case "workspace_settings": {
+      const id = String(args?.workspaceId);
+      return (
+        DEMO_SETTINGS[id] ?? {
+          workspaceId: id,
+          preferredTerminal: "system",
+          defaultSkillTab: "files",
+          ignorePatterns: ["node_modules", "target", "dist", ".git"],
+        }
+      ) as T;
+    }
+    case "save_workspace_settings": {
+      const id = String(args?.workspaceId);
+      const patch = (args?.patch as Record<string, unknown>) ?? {};
+      const current = DEMO_SETTINGS[id] ?? {
+        workspaceId: id,
+        preferredTerminal: "system",
+        defaultSkillTab: "files",
+        ignorePatterns: ["node_modules", "target", "dist", ".git"],
+      };
+      const merged = {
+        ...current,
+        workspaceId: id,
+        preferredTerminal:
+          (patch.preferredTerminal as string) ?? current.preferredTerminal,
+        defaultSkillTab:
+          (patch.defaultSkillTab as string) ?? current.defaultSkillTab,
+        ignorePatterns:
+          (patch.ignorePatterns as string[]) ?? current.ignorePatterns,
+      } as WorkspaceSettings;
+      DEMO_SETTINGS[id] = merged;
+      return merged as T;
+    }
+    case "workspace_templates":
+      return DEMO_TEMPLATES as T;
+    case "add_project": {
+      const id = String(args?.workspaceId);
+      const path = String(args?.path);
+      const ws = DEMO_WORKSPACES.find((w) => w.id === id);
+      if (!ws) throw new Error("workspace not found");
+      if (!ws.projects.some((p) => p.path === path)) {
+        ws.projects.push({ path, name: path.split(/[\\/]/).pop() ?? path });
+      }
+      return ws as T;
+    }
+    case "create_from_template": {
+      const templateId = String(args?.templateId);
+      const rootPath = String(args?.rootPath);
+      const name = args?.name as string | undefined;
+      const template = DEMO_TEMPLATES.find((t) => t.id === templateId);
+      if (!template) throw new Error("template not found");
+      const ws: Workspace = {
+        id: crypto.randomUUID(),
+        name: name || template.name,
+        rootPath,
+        projects: template.projects.map((p) => ({
+          path: `${rootPath.replace(/[\\/]+$/, "")}/${p}`,
+          name: p,
+        })),
+        pinned: false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      DEMO_WORKSPACES.push(ws);
+      return ws as T;
+    }
     default:
       throw new Error(`Unknown demo command: ${cmd}`);
   }

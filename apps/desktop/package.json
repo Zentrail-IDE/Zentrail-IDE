@@ -18,6 +18,7 @@
     "@zentrail/ui": "workspace:*",
     "@zentrail/terminal": "workspace:*",
     "@zentrail/git": "workspace:*",
+    "@zentrail/workspace": "workspace:*",
     "@tauri-apps/api": "^2.1.1",
     "@tauri-apps/plugin-dialog": "^2.0.2",
     "@tauri-apps/plugin-fs": "^2.0.2",

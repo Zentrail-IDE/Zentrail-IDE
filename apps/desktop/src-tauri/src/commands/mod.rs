@@ -1,6 +1,7 @@
 pub mod files;
 pub mod terminal;
 pub mod git;
+pub mod workspace;
 
 use serde::Serialize;
 

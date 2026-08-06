@@ -20,7 +20,8 @@
       "@zentrail/ui": ["../../packages/ui/src"],
       "@zentrail/settings": ["../../packages/settings/src"],
       "@zentrail/terminal": ["../../packages/terminal/src"],
-      "@zentrail/git": ["../../packages/git/src"]
+      "@zentrail/git": ["../../packages/git/src"],
+      "@zentrail/workspace": ["../../packages/workspace/src"]
     }
   },
   "include": ["src"],

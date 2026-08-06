@@ -41,6 +41,11 @@ export function App() {
     wireTerminalEvents();
   }, []);
 
+  // Hydrate the Workspace Manager (workspaces, recents, templates) on launch.
+  useEffect(() => {
+    void useWorkspace.getState().loadAll();
+  }, []);
+
   // Keep the Git store pointed at the open workspace so the status bar branch
   // indicator is always populated, independent of the active sidebar panel.
   useEffect(() => {

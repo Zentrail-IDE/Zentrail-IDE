@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type Activity = "explorer" | "search" | "settings" | "git";
+export type Activity = "explorer" | "search" | "git" | "workspace" | "settings";
 export type ToastKind = "info" | "success" | "error";
 
 export interface Toast {

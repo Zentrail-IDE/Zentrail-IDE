@@ -10,6 +10,7 @@ export default defineConfig({
     alias: {
       "@zentrail/ui": resolve(__dirname, "../../packages/ui/src"),
       "@zentrail/settings": resolve(__dirname, "../../packages/settings/src"),
+      "@zentrail/workspace": resolve(__dirname, "../../packages/workspace/src"),
     },
   },
   clearScreen: false,

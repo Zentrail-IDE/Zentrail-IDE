@@ -33,7 +33,23 @@ pub fn run() {
             commands::git::git_pull,
             commands::git::git_push,
             commands::git::git_merge,
-            commands::git::git_init
+            commands::git::git_init,
+            commands::workspace::list_workspaces,
+            commands::workspace::save_workspace,
+            commands::workspace::delete_workspace,
+            commands::workspace::recent_workspaces,
+            commands::workspace::record_recent,
+            commands::workspace::remove_recent,
+            commands::workspace::workspace_sessions,
+            commands::workspace::save_session,
+            commands::workspace::delete_session,
+            commands::workspace::workspace_memory,
+            commands::workspace::save_memory,
+            commands::workspace::workspace_settings,
+            commands::workspace::save_workspace_settings,
+            commands::workspace::workspace_templates,
+            commands::workspace::add_project,
+            commands::workspace::create_from_template
         ])
         .run(tauri::generate_context!())
         .expect("error while running Zentrail IDE");
