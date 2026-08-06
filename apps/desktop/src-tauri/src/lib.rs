@@ -1,6 +1,7 @@
 pub mod commands;
 
 use commands::terminal::TerminalSessions;
+use commands::agent::AgentManager;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -10,6 +11,10 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_notification::init())
         .manage(TerminalSessions::default())
+        .setup(|app| {
+            app.manage(AgentManager::new(app.handle()));
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             commands::ping,
             commands::get_app_version,
@@ -49,7 +54,42 @@ pub fn run() {
             commands::workspace::save_workspace_settings,
             commands::workspace::workspace_templates,
             commands::workspace::add_project,
-            commands::workspace::create_from_template
+            commands::workspace::create_from_template,
+            commands::ai::ai_list_models,
+            commands::ai::ai_save_model,
+            commands::ai::ai_delete_model,
+            commands::ai::ai_list_credentials,
+            commands::ai::ai_save_credential,
+            commands::ai::ai_delete_credential,
+            commands::ai::ai_list_conversations,
+            commands::ai::ai_save_conversation,
+            commands::ai::ai_delete_conversation,
+            commands::ai::ai_chat_stream,
+            commands::ai::ai_list_templates,
+            commands::ai::ai_save_template,
+            commands::ai::ai_delete_template,
+            commands::agent::agent_list_agents,
+            commands::agent::agent_save_agent,
+            commands::agent::agent_delete_agent,
+            commands::agent::agent_list_instances,
+            commands::agent::agent_start,
+            commands::agent::agent_stop,
+            commands::agent::agent_pause,
+            commands::agent::agent_resume,
+            commands::agent::agent_send_message,
+            commands::agent::agent_broadcast,
+            commands::agent::agent_list_messages,
+            commands::agent::agent_schedule_task,
+            commands::agent::agent_list_schedules,
+            commands::agent::agent_cancel_schedule,
+            commands::agent::agent_run_schedule,
+            commands::agent::agent_get_memory,
+            commands::agent::agent_save_memory,
+            commands::agent::agent_delete_memory,
+            commands::agent::agent_start_background,
+            commands::agent::agent_list_background,
+            commands::agent::agent_get_metrics,
+            commands::agent::agent_get_all_metrics
         ])
         .run(tauri::generate_context!())
         .expect("error while running Zentrail IDE");

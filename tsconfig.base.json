@@ -30,7 +30,8 @@
       "@zentrail/git": ["packages/git/src"],
       "@zentrail/settings": ["packages/settings/src"],
       "@zentrail/skill": ["packages/skill/src"],
-      "@zentrail/agent": ["packages/agent/src"]
+      "@zentrail/agent": ["packages/agent/src"],
+      "@zentrail/ai": ["packages/ai/src"]
     }
   },
   "exclude": ["node_modules", "dist", "target"]

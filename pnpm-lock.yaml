@@ -35,6 +35,9 @@ importers:
       '@tauri-apps/plugin-shell':
         specifier: ^2.0.2
         version: 2.3.5
+      '@zentrail/ai':
+        specifier: workspace:*
+        version: link:../../packages/ai
       '@zentrail/git':
         specifier: workspace:*
         version: link:../../packages/git
@@ -47,6 +50,9 @@ importers:
       '@zentrail/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@zentrail/workspace':
+        specifier: workspace:*
+        version: link:../../packages/workspace
       lucide-react:
         specifier: ^0.460.0
         version: 0.460.0(react@18.3.1)
@@ -91,6 +97,15 @@ importers:
   backend/go-core: {}
 
   packages/agent:
+    devDependencies:
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.4
+        version: 2.1.9(@types/node@20.19.43)
+
+  packages/ai:
     devDependencies:
       typescript:
         specifier: ^5.6.3

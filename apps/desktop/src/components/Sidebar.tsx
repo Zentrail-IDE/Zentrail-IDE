@@ -3,6 +3,7 @@ import { FileExplorer } from "./FileExplorer";
 import { SettingsPanel } from "./SettingsPanel";
 import { GitPanel } from "./GitPanel";
 import { WorkspacePanel } from "./WorkspacePanel";
+import { AgentPanel } from "./AgentPanel";
 
 function SearchPanel() {
   return (
@@ -30,6 +31,7 @@ export function Sidebar() {
       {activity === "git" && <GitPanel />}
       {activity === "workspace" && <WorkspacePanel />}
       {activity === "settings" && <SettingsPanel />}
+      {activity === "agents" && <AgentPanel />}
     </aside>
   );
 }

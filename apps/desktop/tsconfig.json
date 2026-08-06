@@ -21,7 +21,9 @@
       "@zentrail/settings": ["../../packages/settings/src"],
       "@zentrail/terminal": ["../../packages/terminal/src"],
       "@zentrail/git": ["../../packages/git/src"],
-      "@zentrail/workspace": ["../../packages/workspace/src"]
+      "@zentrail/workspace": ["../../packages/workspace/src"],
+      "@zentrail/ai": ["../../packages/ai/src"],
+      "@zentrail/agent": ["../../packages/agent/src"]
     }
   },
   "include": ["src"],

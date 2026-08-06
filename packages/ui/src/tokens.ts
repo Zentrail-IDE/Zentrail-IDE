@@ -6,11 +6,11 @@
  */
 export const tokens = {
   colors: {
-    background: "#0a0f1c",
-    surface: "#121a2b",
-    border: "#1f2b44",
-    text: "#e6edf7",
-    muted: "#8295b3",
+    background: "#000000",
+    surface: "#0a0a0a",
+    border: "#1a1a1a",
+    text: "#e0e0e0",
+    muted: "#666666",
     primary: "#2f81f7",
     success: "#3fb950",
     warning: "#d29922",

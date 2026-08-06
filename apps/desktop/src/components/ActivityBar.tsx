@@ -1,4 +1,4 @@
-import { Files, Search, GitBranch, Layers, Settings } from "lucide-react";
+import { Files, Search, GitBranch, Layers, Sparkles, Bot, Settings } from "lucide-react";
 import { cn } from "@zentrail/ui";
 import { useUi, type Activity } from "../state/uiStore";
 
@@ -7,6 +7,8 @@ const ITEMS: Array<{ id: Activity; icon: typeof Files; label: string }> = [
   { id: "search", icon: Search, label: "Search" },
   { id: "git", icon: GitBranch, label: "Source Control" },
   { id: "workspace", icon: Layers, label: "Workspace" },
+  { id: "ai", icon: Sparkles, label: "AI Runtime" },
+  { id: "agents", icon: Bot, label: "Agents" },
   { id: "settings", icon: Settings, label: "Settings" },
 ];
 

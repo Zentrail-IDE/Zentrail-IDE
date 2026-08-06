@@ -2,6 +2,8 @@ pub mod files;
 pub mod terminal;
 pub mod git;
 pub mod workspace;
+pub mod ai;
+pub mod agent;
 
 use serde::Serialize;
 

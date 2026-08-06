@@ -90,13 +90,15 @@ The roadmap is divided into multiple phases, each containing detailed tasks, mil
 
 ## Phase 6 — Workspace Agent
 
-* Agent Manager
-* Agent Lifecycle
-* Agent Communication
-* Agent Scheduler
-* Agent Memory
-* Background Agents
-* Agent Monitoring
+**Status: Completed (2026-08-06)** — implemented across the `@zentrail/agent` package, the Tauri Rust backend (`src-tauri/src/commands/agent.rs`), the desktop IPC/store layer, and the Agents activity panel.
+
+* Agent Manager — `agent_list_agents` / `agent_save_agent` / `agent_delete_agent` (persisted registry)
+* Agent Lifecycle — `agent_start` / `agent_stop` / `agent_pause` / `agent_resume` (created → starting → running → paused → stopped → error)
+* Agent Communication — `agent_send_message` / `agent_broadcast` / `agent_list_messages`
+* Agent Scheduler — `agent_schedule_task` / `agent_run_schedule` / `agent_cancel_schedule` (cron + `@every:` intervals)
+* Agent Memory — `agent_get_memory` / `agent_save_memory` / `agent_delete_memory`
+* Background Agents — `agent_start_background` / `agent_list_background` (detached runs)
+* Agent Monitoring — `agent_get_metrics` / `agent_get_all_metrics` (health, CPU, memory, tasks, uptime)
 
 ---
 

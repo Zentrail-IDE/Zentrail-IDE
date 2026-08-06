@@ -1,9 +1,10 @@
-import { Circle, Bell, GitBranch, TerminalSquare } from "lucide-react";
+import { Circle, Bell, GitBranch, TerminalSquare, Sparkles } from "lucide-react";
 import { cn } from "@zentrail/ui";
 import { useWorkspace } from "../state/workspaceStore";
 import { useEditor } from "../state/editorStore";
 import { useUi } from "../state/uiStore";
 import { useGit } from "../state/gitStore";
+import { useAi } from "../state/aiStore";
 
 /** Bottom status bar: workspace, active file, git, and runtime status. */
 export function StatusBar() {
@@ -14,6 +15,11 @@ export function StatusBar() {
   const toggleTerminal = useUi((s) => s.toggleTerminal);
   const gitState = useGit((s) => s.state);
   const gitExists = useGit((s) => s.exists);
+  const chatOpen = useUi((s) => s.chatOpen);
+  const toggleChat = useUi((s) => s.toggleChat);
+  const activeModelId = useAi((s) => s.activeModelId);
+  const models = useAi((s) => s.models);
+  const activeModel = models.find((m) => m.id === activeModelId);
 
   return (
     <footer className="statusbar">
@@ -43,6 +49,25 @@ export function StatusBar() {
             {tab.language} · {tab.name}
           </span>
         )}
+        {activeModel && (
+          <button
+            type="button"
+            className="statusbar__item statusbar__btn"
+            title="AI Model"
+            onClick={() => useUi.getState().setActivity("ai")}
+          >
+            <Sparkles size={12} className="accent" /> {activeModel.name}
+          </button>
+        )}
+        <button
+          type="button"
+          className={cn("statusbar__item", "statusbar__btn", chatOpen && "is-active")}
+          title="Toggle AI Chat (Ctrl+J)"
+          aria-pressed={chatOpen}
+          onClick={toggleChat}
+        >
+          <Sparkles size={12} /> Chat
+        </button>
         <button
           type="button"
           className={cn("statusbar__item", "statusbar__btn", terminalOpen && "is-active")}

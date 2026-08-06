@@ -11,6 +11,8 @@ export default defineConfig({
       "@zentrail/ui": resolve(__dirname, "../../packages/ui/src"),
       "@zentrail/settings": resolve(__dirname, "../../packages/settings/src"),
       "@zentrail/workspace": resolve(__dirname, "../../packages/workspace/src"),
+      "@zentrail/ai": resolve(__dirname, "../../packages/ai/src"),
+      "@zentrail/agent": resolve(__dirname, "../../packages/agent/src"),
     },
   },
   clearScreen: false,
